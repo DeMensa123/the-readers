@@ -1,14 +1,14 @@
 <template>
-  <HelloWorld/>
+  <TheReadersForm/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TheReadersForm from './components/TheReadersForm.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TheReadersForm
   }
 } 
 </script>
@@ -20,6 +20,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
