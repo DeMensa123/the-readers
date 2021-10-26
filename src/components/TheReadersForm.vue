@@ -132,6 +132,20 @@
     <h3 v-if="this.saved" class="text-green-600 font-semibold m-2 text-lg">
       XML bolo uložené
     </h3>
+    <div class="w-1/2 my-4">
+        <button
+        class="p-2 rounded text-white"
+          :class="{
+            'bg-green-400': !this.validated,
+            'bg-green-600  transition duration-300 ease-in-out transform hover:scale-105': this
+              .validated,
+          }"
+          type="submit"
+          @click="this.signXML"
+        >
+          Podpísať XML
+        </button>
+      </div>
   </div>
 </template>
 
@@ -286,12 +300,39 @@ export default {
       })
         .then((response) => {
           if (response.ok) {
-            // console.log(xml);
             return response.text();
           } else {
-            // var error = new Error("Something went wrong");
-            // this.error = res;
-            // throw new Error("Something went wrong");
+            return response.text();
+          }
+        })
+        .then((data) => {
+          if (data) {
+            this.error = data.split(":")[1];
+            console.log(data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    signXML() {
+      const postUrl = "http://localhost:9000/sign";
+
+      const xml = this.createXML();
+
+      fetch(postUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/xml",
+        },
+        mode: "cors",
+        referrerPolicy: "no-referrer",
+        body: xml,
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.text();
+          } else {
             return response.text();
           }
         })
