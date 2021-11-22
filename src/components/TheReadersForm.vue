@@ -132,19 +132,36 @@
     <h3 v-if="this.saved" class="text-green-600 font-semibold m-2 text-lg">
       XML bolo uložené
     </h3>
+    <div class="flex flex-row w-full max-w-lg ">
     <div class="w-1/2 my-4">
-        <button
+      <button
         class="p-2 rounded text-white"
           :class="{
-            'bg-green-400': !this.validated,
+            'bg-green-400': !this.saved,
             'bg-green-600  transition duration-300 ease-in-out transform hover:scale-105': this
-              .validated,
+              .saved,
           }"
           type="submit"
           @click="this.signXML"
         >
           Podpísať XML
         </button>
+      </div>
+      <div class="w-1/2 my-4">
+        <button
+        class="p-2 rounded text-white"
+          :class="{
+            'bg-green-400': !this.signed,
+            'bg-green-600  transition duration-300 ease-in-out transform hover:scale-105': this
+              .signed,
+          }"
+          type="submit"
+          :disabled="!this.signed"
+          @click="this.timestampXML"
+        >
+          Opečiatkovať XML
+        </button>
+      </div>
       </div>
   </div>
 </template>
@@ -167,6 +184,7 @@ export default {
       error: "",
       validated: false,
       saved: false,
+      signed: false
     };
   },
   methods: {
@@ -328,6 +346,38 @@ export default {
         mode: "cors",
         referrerPolicy: "no-referrer",
         body: xml,
+      })
+        .then((response) => {
+          if (response.ok) {
+            this.signed = true;
+            return response.text();
+          } else {
+            return response.text();
+          }
+        })
+        .then((data) => {
+          if (data) {
+            this.error = data.split(":")[1];
+            console.log(data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    timestampXML() {
+      const postUrl = "http://localhost:9000/timestamp";
+
+      // const xml = this.createXML();
+
+      fetch(postUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/xml",
+        },
+        mode: "cors",
+        referrerPolicy: "no-referrer",
+        body: "",
       })
         .then((response) => {
           if (response.ok) {
